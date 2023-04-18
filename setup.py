@@ -80,13 +80,13 @@ if not torch.cuda.is_available():
     if os.environ.get("TORCH_CUDA_ARCH_LIST", None) is None and CUDA_HOME is not None:
         _, bare_metal_version = get_cuda_bare_metal_version(CUDA_HOME)
         if bare_metal_version >= Version("11.8"):
-            os.environ["TORCH_CUDA_ARCH_LIST"] = "6.0;6.1;6.2;7.0;7.5;8.0;8.6;9.0"
+            os.environ["TORCH_CUDA_ARCH_LIST"] = "5.2;6.0;6.1;6.2;7.0;7.5;8.0;8.6;9.0"
         elif bare_metal_version >= Version("11.1"):
-            os.environ["TORCH_CUDA_ARCH_LIST"] = "6.0;6.1;6.2;7.0;7.5;8.0;8.6"
+            os.environ["TORCH_CUDA_ARCH_LIST"] = "5.2;6.0;6.1;6.2;7.0;7.5;8.0;8.6"
         elif bare_metal_version == Version("11.0"):
-            os.environ["TORCH_CUDA_ARCH_LIST"] = "6.0;6.1;6.2;7.0;7.5;8.0"
+            os.environ["TORCH_CUDA_ARCH_LIST"] = "5.2;6.0;6.1;6.2;7.0;7.5;8.0"
         else:
-            os.environ["TORCH_CUDA_ARCH_LIST"] = "6.0;6.1;6.2;7.0;7.5"
+            os.environ["TORCH_CUDA_ARCH_LIST"] = "5.2;6.0;6.1;6.2;7.0;7.5"
 
 
 print("\n\ntorch.__version__  = {}\n\n".format(torch.__version__))
@@ -109,6 +109,16 @@ cc_flag = []
 _, bare_metal_version = get_cuda_bare_metal_version(CUDA_HOME)
 if bare_metal_version < Version("11.0"):
     raise RuntimeError("FlashAttention is only supported on CUDA 11 and above")
+cc_flag.append("-gencode")
+cc_flag.append("arch=compute_52,code=sm_52")
+cc_flag.append("-gencode")
+cc_flag.append("arch=compute_60,code=sm_60")
+cc_flag.append("-gencode")
+cc_flag.append("arch=compute_61,code=sm_61")
+cc_flag.append("-gencode")
+cc_flag.append("arch=compute_62,code=sm_62")
+cc_flag.append("-gencode")
+cc_flag.append("arch=compute_70,code=sm_70")
 cc_flag.append("-gencode")
 cc_flag.append("arch=compute_75,code=sm_75")
 cc_flag.append("-gencode")
